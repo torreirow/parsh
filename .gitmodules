@@ -1,0 +1,3 @@
+[submodule "ssmsh-internal"]
+	path = ssmsh-internal
+	url = git@github.com:torreirow/ssmsh-internal.git
