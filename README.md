@@ -20,24 +20,62 @@ ssmsh is an interactive shell for the EC2 Parameter Store. Features:
 
 ### Binaries
 
-Download binaries for MacOS, Linux, or Windows from the latest release [here](https://github.com/bwhaley/ssmsh/releases).
+Download binaries for MacOS, Linux, or Windows from the latest release [here](https://github.com/torreirow/ssmsh/releases).
 
 ### Homebrew
 
 There is a Homebrew tap published to this repo, for installation on both MacOS and Linux. Add the tap and install with:
 
 ```bash
-brew tap bwhaley/ssmsh https://github.com/bwhaley/ssmsh
+brew tap torreirow/ssmsh https://github.com/torreirow/ssmsh
 brew install ssmsh
 ```
 
 ### Nix
 
-There is also [a Nix package](https://search.nixos.org/packages?channel=unstable&show=ssmsh&query=ssmsh) available for MacOS and Linux:
+**Using Flakes (Recommended):**
+
+This repository includes a `flake.nix` for the latest version (v1.5.1+):
 
 ```bash
-nix-env -i ssmsh
+# Try without installing
+nix run github:torreirow/ssmsh
+
+# Install to your profile
+nix profile install github:torreirow/ssmsh
+
+# Use in NixOS configuration - see below
 ```
+
+**NixOS Configuration:**
+
+Add to your `flake.nix`:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    ssmsh.url = "github:torreirow/ssmsh";
+  };
+
+  outputs = { self, nixpkgs, ssmsh, ... }: {
+    nixosConfigurations.your-hostname = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";  # or aarch64-linux, x86_64-darwin, aarch64-darwin
+      modules = [
+        ({ pkgs, ... }: {
+          environment.systemPackages = [
+            ssmsh.packages.${pkgs.system}.default
+          ];
+        })
+      ];
+    };
+  };
+}
+```
+
+**Legacy nixpkgs (outdated):**
+
+> ⚠️ **Note:** The [nixpkgs package](https://search.nixos.org/packages?channel=unstable&show=ssmsh&query=ssmsh) contains the old upstream version (v1.4.x) without tab completion and other improvements. Use the flake method above for the latest features.
 
 ## Configuration
 
