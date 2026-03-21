@@ -95,11 +95,13 @@ func isCompletionEnabled() bool {
 // setCompletionEnabled sets the runtime completion state
 func setCompletionEnabled(enabled bool) {
 	completionMutex.Lock()
-	defer completionMutex.Unlock()
 	completionEnabled = enabled
+	shouldWarmup := enabled
+	completionMutex.Unlock()
 
 	// Warm up cache when enabling completion
-	if enabled {
+	// (done after unlocking to avoid holding lock during network calls)
+	if shouldWarmup {
 		warmupCache()
 	}
 }

@@ -11,10 +11,10 @@
       packages = forAll (pkgs: {
         default = pkgs.buildGoModule {
           pname = "ssmsh";
-          version = "v1.5.1";
+          version = "v1.5.2";
           src = ./.;
           vendorHash = "sha256-+7duWRe/haBOZbe18sr2qwg419ieEZwYDb0L3IPLA4A=";
-          ldflags = [ "-s" "-w" "-X main.Version=v1.5.1" ];
+          ldflags = [ "-s" "-w" "-X main.Version=v1.5.2" ];
           meta = with pkgs.lib; {
             description = "Interactive shell for AWS SSM Parameter Store";
             homepage = "https://github.com/torreirow/ssmsh";

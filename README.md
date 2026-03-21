@@ -35,7 +35,7 @@ brew install ssmsh
 
 **Using Flakes (Recommended):**
 
-This repository includes a `flake.nix` for the latest version (v1.5.1+):
+This repository includes a `flake.nix` for the latest version (v1.5.2+):
 
 ```bash
 # Try without installing

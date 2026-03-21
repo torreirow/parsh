@@ -283,6 +283,14 @@ func warmupCache() {
 		return
 	}
 
+	// Don't warm up if ParameterStore is not initialized (e.g., in tests)
+	if ps == nil {
+		if os.Getenv("SSMSH_DEBUG") != "" {
+			fmt.Fprintf(os.Stderr, "[DEBUG] warmupCache: ps is nil, skipping\n")
+		}
+		return
+	}
+
 	if os.Getenv("SSMSH_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "[DEBUG] warmupCache: starting cache warmup...\n")
 	}

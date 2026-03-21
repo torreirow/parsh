@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.2] - 2026-03-21
+
+### Fixed
+- **Deadlock in tab completion**: Fixed test deadlock in `TestSetCompletionEnabled` that caused 10-minute timeout and build failures
+  - Refactored `setCompletionEnabled()` to release mutex lock before calling `warmupCache()`
+  - Applied consistent unlock-before-warmup pattern matching `initCompletionSettings()`
+  - Added defensive nil check in `warmupCache()` to prevent crashes in test contexts
+  - All tests now pass without deadlock in normal timeframe (< 1 second)
+
 ## [1.5.1] - 2026-03-21
 
 ### Added
