@@ -47,20 +47,23 @@ nix profile install github:torreirow/ssmsh
 # Use in NixOS configuration - see below
 ```
 
-**NixOS Configuration:**
+**As a Flake Input:**
 
-Add to your `flake.nix`:
+Add `ssmsh` to your flake inputs and use it in your configuration:
 
 ```nix
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     ssmsh.url = "github:torreirow/ssmsh";
+    # Optional: pin to specific version
+    # ssmsh.url = "github:torreirow/ssmsh/v1.5.1";
   };
 
   outputs = { self, nixpkgs, ssmsh, ... }: {
+    # NixOS system configuration
     nixosConfigurations.your-hostname = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";  # or aarch64-linux, x86_64-darwin, aarch64-darwin
+      system = "x86_64-linux";
       modules = [
         ({ pkgs, ... }: {
           environment.systemPackages = [
@@ -69,9 +72,42 @@ Add to your `flake.nix`:
         })
       ];
     };
+
+    # Home Manager configuration
+    homeConfigurations.your-user = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      modules = [
+        ({ pkgs, ... }: {
+          home.packages = [
+            ssmsh.packages.${pkgs.system}.default
+          ];
+        })
+      ];
+    };
+
+    # Development shell
+    devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
+      packages = [
+        ssmsh.packages.x86_64-linux.default
+      ];
+    };
   };
 }
 ```
+
+**Flake Output Structure:**
+
+```nix
+# Available outputs
+ssmsh.packages.<system>.default  # The ssmsh package
+ssmsh.apps.<system>.default      # Runnable app (used by nix run)
+```
+
+**Supported Systems:**
+- `x86_64-linux`
+- `aarch64-linux`
+- `x86_64-darwin` (macOS Intel)
+- `aarch64-darwin` (macOS Apple Silicon)
 
 **Legacy nixpkgs (outdated):**
 
