@@ -1,10 +1,10 @@
-# ssmsh
+# parsh
 
-> **Note:** This is a maintained fork of [bwhaley/ssmsh](https://github.com/bwhaley/ssmsh).
-> The upstream repository has been inactive since February 2024. This fork includes active maintenance,
-> bug fixes, and new features like tab completion ([#31](https://github.com/bwhaley/ssmsh/issues/31)).
+> **Note:** This is a fork of [bwhaley/ssmsh](https://github.com/bwhaley/ssmsh) (originally forked from [torreirow/ssmsh](https://github.com/torreirow/ssmsh)).
+> Starting with v1.0.0, the project has been renamed to **parsh** (Parameter Store Shell) to establish its own identity
+> while continuing active development, bug fixes, and new features like tab completion.
 
-ssmsh is an interactive shell for the EC2 Parameter Store. Features:
+parsh is an interactive shell for the AWS EC2 Parameter Store. Features:
 * Interact with the parameter store hierarchy using familiar commands like cd, ls, cp, mv, and rm
 * Supports relative paths and shorthand (`..`) syntax
 * Operate on parameters between regions
@@ -20,45 +20,45 @@ ssmsh is an interactive shell for the EC2 Parameter Store. Features:
 
 ### Binaries
 
-Download binaries for MacOS, Linux, or Windows from the latest release [here](https://github.com/torreirow/ssmsh/releases).
+Download binaries for MacOS, Linux, or Windows from the latest release [here](https://github.com/torreirow/parsh/releases).
 
 ### Nix
 
 **Using Flakes (Recommended):**
 
-This repository includes a `flake.nix` for the latest version (v1.5.2+):
+This repository includes a `flake.nix` for the latest version:
 
 ```bash
 # Try without installing
-nix run github:torreirow/ssmsh
+nix run github:torreirow/parsh
 
 # Install to your profile
-nix profile install github:torreirow/ssmsh
+nix profile install github:torreirow/parsh
 
 # Use in NixOS configuration - see below
 ```
 
 **As a Flake Input:**
 
-Add `ssmsh` to your flake inputs and use it in your configuration:
+Add `parsh` to your flake inputs and use it in your configuration:
 
 ```nix
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    ssmsh.url = "github:torreirow/ssmsh";
+    parsh.url = "github:torreirow/parsh";
     # Optional: pin to specific version
-    # ssmsh.url = "github:torreirow/ssmsh/v1.5.1";
+    # parsh.url = "github:torreirow/parsh/v1.0.0";
   };
 
-  outputs = { self, nixpkgs, ssmsh, ... }: {
+  outputs = { self, nixpkgs, parsh, ... }: {
     # NixOS system configuration
     nixosConfigurations.your-hostname = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ({ pkgs, ... }: {
           environment.systemPackages = [
-            ssmsh.packages.${pkgs.system}.default
+            parsh.packages.${pkgs.system}.default
           ];
         })
       ];
@@ -70,7 +70,7 @@ Add `ssmsh` to your flake inputs and use it in your configuration:
       modules = [
         ({ pkgs, ... }: {
           home.packages = [
-            ssmsh.packages.${pkgs.system}.default
+            parsh.packages.${pkgs.system}.default
           ];
         })
       ];
@@ -79,7 +79,7 @@ Add `ssmsh` to your flake inputs and use it in your configuration:
     # Development shell
     devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
       packages = [
-        ssmsh.packages.x86_64-linux.default
+        parsh.packages.x86_64-linux.default
       ];
     };
   };
@@ -90,8 +90,8 @@ Add `ssmsh` to your flake inputs and use it in your configuration:
 
 ```nix
 # Available outputs
-ssmsh.packages.<system>.default  # The ssmsh package
-ssmsh.apps.<system>.default      # Runnable app (used by nix run)
+parsh.packages.<system>.default  # The parsh package
+parsh.apps.<system>.default      # Runnable app (used by nix run)
 ```
 
 **Supported Systems:**
@@ -100,30 +100,26 @@ ssmsh.apps.<system>.default      # Runnable app (used by nix run)
 - `x86_64-darwin` (macOS Intel)
 - `aarch64-darwin` (macOS Apple Silicon)
 
-**Legacy nixpkgs (outdated):**
-
-> ⚠️ **Note:** The [nixpkgs package](https://search.nixos.org/packages?channel=unstable&show=ssmsh&query=ssmsh) contains the old upstream version (v1.4.x) without tab completion and other improvements. Use the flake method above for the latest features.
-
 ## Configuration
 
 Set up [AWS credentials](http://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials).
 
 ### Configuration File Location
 
-`ssmsh` follows the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) and stores its configuration in `~/.config/ssmsh/config` by default.
+`parsh` follows the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) and stores its configuration in `~/.config/parsh/config` by default.
 
 **Configuration file priority (highest to lowest):**
-1. `--config` flag: `ssmsh --config /path/to/config`
-2. `SSMSH_CONFIG` environment variable: `export SSMSH_CONFIG=/path/to/config`
-3. XDG config directory: `~/.config/ssmsh/config`
-4. Legacy location: `~/.ssmshrc` (for backwards compatibility)
+1. `--config` flag: `parsh --config /path/to/config`
+2. `PARSH_CONFIG` environment variable: `export PARSH_CONFIG=/path/to/config`
+3. XDG config directory: `~/.config/parsh/config`
+4. Legacy location: `~/.parshrc` (for backwards compatibility)
 
 **Generate a default configuration file:**
 ```bash
-ssmsh --generate-config
+parsh --generate-config
 ```
 
-This creates `~/.config/ssmsh/config` with all available settings and comments.
+This creates `~/.config/parsh/config` with all available settings and comments.
 
 ### Configuration Options
 
@@ -147,13 +143,13 @@ completion-cache-ttl=30      # Cache TTL in seconds (default: 30, range: 0-3600)
 
 # Persistent cache settings
 cache-enabled=true           # Enable persistent cache across sessions (default: true)
-cache-location=~/.cache/ssmsh/cache.gob.gz  # Cache file location
+cache-location=~/.cache/parsh/cache.gob.gz  # Cache file location
 cache-max-size=50            # Maximum cache size in MB (default: 50, max: 500)
 cache-compression=true       # Compress cache file (default: true)
 
 # Shell history
 history-size=1000            # Command history size (default: 1000)
-history-file=~/.config/ssmsh/history  # History file location
+history-file=~/.config/parsh/history  # History file location
 ```
 
 **Configuration notes:**
@@ -164,10 +160,10 @@ history-file=~/.config/ssmsh/history  # History file location
 
 ### Automatic Migration
 
-If you have an existing `~/.ssmshrc` configuration file, `ssmsh` will automatically migrate it to `~/.config/ssmsh/config` on first run. The original file will be backed up to `~/.ssmshrc.backup`.
+If you have an existing `~/.parshrc` configuration file, `parsh` will automatically migrate it to `~/.config/parsh/config` on first run. The original file will be backed up to `~/.parshrc.backup`.
 
 **Migration behavior:**
-* Happens automatically on startup (unless `--config` or `SSMSH_CONFIG` is set)
+* Happens automatically on startup (unless `--config` or `PARSH_CONFIG` is set)
 * Creates backup of original file
 * Preserves all settings
 * Displays migration banner with file locations
@@ -175,7 +171,7 @@ If you have an existing `~/.ssmshrc` configuration file, `ssmsh` will automatica
 
 ## Tab Completion
 
-`ssmsh` provides intelligent tab completion for AWS Parameter Store paths and parameter names.
+`parsh` provides intelligent tab completion for AWS Parameter Store paths and parameter names.
 
 ### Features
 
@@ -238,7 +234,7 @@ Control tab completion behavior at runtime:
 
 ### Configuration
 
-Tab completion can be configured in `~/.config/ssmsh/config`:
+Tab completion can be configured in `~/.config/parsh/config`:
 
 ```bash
 [default]
@@ -246,7 +242,7 @@ completion=true              # Enable/disable (default: true)
 completion-max-items=50      # Max suggestions shown (default: 50)
 completion-cache-ttl=30      # Cache TTL in seconds (default: 30)
 cache-enabled=true           # Persistent cache (default: true)
-cache-location=~/.cache/ssmsh/cache.gob.gz
+cache-location=~/.cache/parsh/cache.gob.gz
 cache-max-size=50            # Max cache size in MB (default: 50)
 cache-compression=true       # Compress cache file (default: true)
 ```
@@ -270,7 +266,7 @@ Commands:
 cd           change your relative location within the parameter store
 clear        clear the screen
 completion   control tab completion settings
-config       manage ssmsh configuration
+config       manage parsh configuration
 cp           copy source to dest
 decrypt      toggle parameter decryption
 exit         exit the program
@@ -486,13 +482,13 @@ put name=/dev/app/domain value="www.example.com" type=String description="The do
 rm /dev/app/domain
 cp -r /dev /test
 EOF
-$ ssmsh -file commands.txt
-$ cat commands.txt | ssmsh -file -  # Read commands from STDIN
+$ parsh -file commands.txt
+$ cat commands.txt | parsh -file -  # Read commands from STDIN
 ```
 
 ###  Inline commands
 ```
-$ ssmsh put name=/dev/app/domain value="www.example.com" type=String description="The domain of the app in dev"
+$ parsh put name=/dev/app/domain value="www.example.com" type=String description="The domain of the app in dev"
 ```
 
 ## todo (maybe)
@@ -519,8 +515,8 @@ go version go1.17.6 darwin/arm64
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 ```
-3. Clone this repository: `git clone https://github.com/torreirow/ssmsh.git`
-4. Run `cd ssmsh && make` to build and install the binary to `$GOPATH/bin/ssmsh`
+3. Clone this repository: `git clone https://github.com/torreirow/parsh.git`
+4. Run `cd parsh && make` to build and install the binary to `$GOPATH/bin/parsh`
 
 
 ## Related tools
@@ -531,6 +527,11 @@ Tool | Description
 [ssmple](https://github.com/adamcin/ssmple) | Serialize parameter store to properties
 
 ## Credits
+
+### Original Project
+**ssmsh** by [Ben Whaley](https://github.com/bwhaley/ssmsh) - The original Parameter Store shell
+
+### Libraries
 Library | Use
 ------- | -----
 [abiosoft/ishell](https://github.com/abiosoft/ishell) | The interactive shell for golang

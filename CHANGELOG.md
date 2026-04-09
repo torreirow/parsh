@@ -1,11 +1,47 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to parsh will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## NEXT VERSION
+
+### Added
+
+### Changed
+
+### Fixed
+
+## [1.0.0] - 2026-04-09
+
+### Project Rebrand
+
+**parsh** (Parameter Store Shell) is now the official name of this project, forked from [bwhaley/ssmsh](https://github.com/bwhaley/ssmsh).
+
+This rebrand establishes parsh as an independent project while honoring its origins. The project continues active development
+with all the features from the ssmsh fork, plus new infrastructure improvements.
+
+**What's changed:**
+- **Binary name**: `ssmsh` → `parsh`
+- **Module path**: `github.com/bwhaley/ssmsh` → `github.com/torreirow/parsh`
+- **Config paths**: `~/.config/ssmsh` → `~/.config/parsh`, `~/.cache/ssmsh` → `~/.cache/parsh`
+- **Environment variables**: `SSMSH_CONFIG` → `PARSH_CONFIG`, `SSMSH_DEBUG` → `PARSH_DEBUG`
+- **GitHub repository**: `torreirow/ssmsh` → `torreirow/parsh`
+
+**Migrating from ssmsh:**
+```bash
+# Config migration (manual)
+mv ~/.config/ssmsh ~/.config/parsh
+mv ~/.cache/ssmsh ~/.cache/parsh
+
+# Or update environment variable
+export PARSH_CONFIG=~/.config/ssmsh/config  # Continue using old config
+
+# Binary replacement
+rm $(which ssmsh)  # Remove old binary
+# Install parsh from releases
+```
 
 ### Added
 - **Release automation**: Comprehensive release.sh script for automated release workflow
@@ -25,11 +61,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **VERSION file**: Semantic versioning tracking in dedicated file
   - Single source of truth for current version
   - Used by release.sh for automated version bumping
-  - Replaces VERSION.md for release automation compatibility
 
 ### Changed
+- **Version number**: Reset to 1.0.0 to signify new project identity
+- **All references**: Updated from ssmsh to parsh throughout codebase and documentation
 
-### Fixed
+---
+
+## Previous History (as ssmsh fork)
+
+The following releases were published under the ssmsh name before the parsh rebrand:
 
 ## [1.5.2] - 2026-03-21
 
