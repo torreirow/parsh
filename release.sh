@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Release Preparation Script for SSMSH
+# Release Preparation Script for PARSH
 #
 # This script prepares a new release by:
 # 1. Checking for uncommitted changes
@@ -285,7 +285,7 @@ if [[ -f flake.nix ]] && [[ -f go.mod ]]; then
 
             # Try to build and capture the correct hash from error output
             VENDOR_HASH=""
-            BUILD_OUTPUT=$(nix build .#ssmsh 2>&1 || true)
+            BUILD_OUTPUT=$(nix build .#parsh 2>&1 || true)
 
             # Parse hash from output (Nix shows: "got: sha256-...")
             VENDOR_HASH=$(echo "$BUILD_OUTPUT" | grep -oP 'got:\s+\Ksha256-[A-Za-z0-9+/=]+' | head -1)
@@ -312,12 +312,12 @@ if [[ -f flake.nix ]] && [[ -f go.mod ]]; then
                 fi
             else
                 print_warning "Could not calculate vendorHash automatically"
-                print_info "Manual update: Run 'nix build .#ssmsh 2>&1 | grep got:' and update flake.nix"
+                print_info "Manual update: Run 'nix build .#parsh 2>&1 | grep got:' and update flake.nix"
             fi
         else
             print_warning "Nix not found - skipping automatic vendorHash update"
             print_info "Install Nix for automated vendorHash updates, or update manually:"
-            print_info "  nix build .#ssmsh 2>&1 | grep 'got:'"
+            print_info "  nix build .#parsh 2>&1 | grep 'got:'"
         fi
     fi
 fi
@@ -365,11 +365,11 @@ if [[ -f go.mod ]] && command -v go &> /dev/null; then
     print_info "(Official binaries will be built by GoReleaser after tag push)"
 
     # Build with version ldflags
-    if go build -ldflags "-X main.Version=${NEW_VERSION}" -o ssmsh.test 2>&1; then
+    if go build -ldflags "-X main.Version=${NEW_VERSION}" -o parsh.test 2>&1; then
         print_success "Go build succeeded"
 
         # Test version output
-        VERSION_OUTPUT=$(./ssmsh.test --version 2>&1 || echo "")
+        VERSION_OUTPUT=$(./parsh.test --version 2>&1 || echo "")
         if echo "$VERSION_OUTPUT" | grep -q "${NEW_VERSION}"; then
             print_success "Version ${NEW_VERSION} embedded correctly"
         else
@@ -377,7 +377,7 @@ if [[ -f go.mod ]] && command -v go &> /dev/null; then
         fi
 
         # Clean up test binary
-        rm -f ssmsh.test
+        rm -f parsh.test
     else
         print_error "Go build failed!"
         print_error "Fix build errors before releasing"
@@ -532,10 +532,10 @@ echo "    • Generate checksums"
 echo "    • Publish GitHub Release with all artifacts"
 echo ""
 print_info "  Monitor the build:"
-echo "    https://github.com/torreirow/ssmsh/actions"
+echo "    https://github.com/torreirow/parsh/actions"
 echo ""
 print_info "  View the release (when complete):"
-echo "    https://github.com/torreirow/ssmsh/releases/tag/v${NEW_VERSION}"
+echo "    https://github.com/torreirow/parsh/releases/tag/v${NEW_VERSION}"
 print_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 print_success "Done! 🚀"

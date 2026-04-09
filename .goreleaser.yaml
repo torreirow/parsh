@@ -5,7 +5,7 @@ before:
     - go mod tidy
 
 builds:
-  - id: ssmsh
+  - id: parsh
     env:
       - CGO_ENABLED=0
     goos:
@@ -17,10 +17,10 @@ builds:
       - arm64
     ldflags:
       - -X main.Version={{.Version}}
-    binary: ssmsh-{{.Os}}-{{.Arch}}
+    binary: parsh-{{.Os}}-{{.Arch}}
 
 archives:
-  - name_template: "ssmsh-{{.Version}}-{{.Os}}-{{.Arch}}"
+  - name_template: "parsh-{{.Version}}-{{.Os}}-{{.Arch}}"
     files:
       - LICENSE
       - README.md
@@ -32,4 +32,4 @@ checksum:
 release:
   github:
     owner: torreirow
-    name: ssmsh
+    name: parsh

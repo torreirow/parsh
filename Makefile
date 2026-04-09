@@ -1,13 +1,13 @@
 SHELL := /bin/bash
-PROJECT := github.com/bwhaley/ssmsh
+PROJECT := github.com/torreirow/parsh
 PKGS := $(shell go list ./... | grep -v /vendor)
-EXECUTABLE := ssmsh
-PKG := ssmsh
+EXECUTABLE := parsh
+PKG := parsh
 GIT_COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null)
 
 .PHONY: build test golint docs $(PROJECT) $(PKGS) vendor
 
-VERSION := $(shell echo ${SSMSH_VERSION})
+VERSION := $(shell echo ${PARSH_VERSION})
 ifeq "$(VERSION)" ""
     VERSION="auto-build"
 endif
