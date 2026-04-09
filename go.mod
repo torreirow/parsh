@@ -1,4 +1,4 @@
-module github.com/bwhaley/ssmsh
+module github.com/torreirow/parsh
 
 go 1.17
 
