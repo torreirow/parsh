@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## NEXT VERSION
 
 ### Added
+- **Release automation**: Comprehensive release.sh script for automated release workflow
+  - Interactive version bumping (patch/minor/major releases)
+  - Automatic CHANGELOG.md updates with version and date replacement
+  - OpenSpec change archiving integration before releases
+  - Nix flake vendorHash auto-calculation when Go dependencies change
+  - Local build verification with version embedding test
+  - Git commit and tag creation with changelog extraction
+  - GitHub Actions integration prompts for automated multi-platform builds
+- **GoReleaser v2 configuration**: Modern release build configuration
+  - Multi-platform binary builds (Linux, macOS, Windows)
+  - Multi-architecture support (amd64, arm64)
+  - Automated archive creation (tar.gz for Unix, zip for Windows)
+  - Checksum generation for release artifacts
+  - GitHub Release automation via GitHub Actions on tag push
+- **VERSION file**: Semantic versioning tracking in dedicated file
+  - Single source of truth for current version
+  - Used by release.sh for automated version bumping
+  - Replaces VERSION.md for release automation compatibility
 
 ### Changed
 
