@@ -6,3 +6,4 @@ openspec
 ssmsh
 coverage.out
 *.test
+*.sw*
