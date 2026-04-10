@@ -12,10 +12,7 @@ ifeq "$(VERSION)" ""
     VERSION="auto-build"
 endif
 
-GOVERSION := $(shell go version | grep 1.17)
-ifeq "$(GOVERSION)" ""
-    $(error must be running Go version 1.17.x)
-endif
+# Go version check removed - version requirement is defined in go.mod (go 1.21)
 
 ifndef $(GOPATH)
    GOPATH=$(shell go env GOPATH)
