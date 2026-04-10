@@ -285,7 +285,7 @@ if [[ -f flake.nix ]] && [[ -f go.mod ]]; then
 
             # Try to build and capture the correct hash from error output
             VENDOR_HASH=""
-            BUILD_OUTPUT=$(nix build .#parsh 2>&1 || true)
+            BUILD_OUTPUT=$(nix build .#default 2>&1 || true)
 
             # Parse hash from output (Nix shows: "got: sha256-...")
             VENDOR_HASH=$(echo "$BUILD_OUTPUT" | grep -oP 'got:\s+\Ksha256-[A-Za-z0-9+/=]+' | head -1)

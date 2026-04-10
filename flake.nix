@@ -13,7 +13,7 @@
           pname = "parsh";
           version = "v1.0.0";
           src = ./.;
-          vendorHash = "sha256-+7duWRe/haBOZbe18sr2qwg419ieEZwYDb0L3IPLA4A=";
+          vendorHash = "sha256-ojWjqz0RSGPlo7WO2FiHLArvN+B7u1b+NigYejGjd6o=";
           ldflags = [ "-s" "-w" "-X main.Version=v1.0.0" ];
           meta = with pkgs.lib; {
             description = "Interactive shell for AWS SSM Parameter Store (forked from ssmsh)";
