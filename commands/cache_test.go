@@ -151,44 +151,6 @@ func TestThrottleBackoff(t *testing.T) {
 	}
 }
 
-func TestAdaptiveTimeout(t *testing.T) {
-	pt := &performanceTracker{
-		recentLatencies: make([]time.Duration, 0, 10),
-	}
-
-	// No history - should return default
-	timeout := pt.getAdaptiveTimeout()
-	if timeout != 500*time.Millisecond {
-		t.Errorf("Default timeout should be 500ms, got %v", timeout)
-	}
-
-	// Add fast latencies
-	for i := 0; i < 10; i++ {
-		pt.recordLatency(100 * time.Millisecond)
-	}
-
-	timeout = pt.getAdaptiveTimeout()
-	// 2x average = 200ms (at minimum)
-	if timeout < 200*time.Millisecond {
-		t.Errorf("Timeout should be at least 200ms, got %v", timeout)
-	}
-
-	// Add slow latencies
-	pt.recentLatencies = make([]time.Duration, 0, 10)
-	for i := 0; i < 10; i++ {
-		pt.recordLatency(800 * time.Millisecond)
-	}
-
-	timeout = pt.getAdaptiveTimeout()
-	// 2x average would be 1600ms, but capped at 1000ms
-	if timeout > 1*time.Second {
-		t.Errorf("Timeout should be capped at 1s, got %v", timeout)
-	}
-	if timeout != 1*time.Second {
-		t.Errorf("Expected 1s timeout for slow network, got %v", timeout)
-	}
-}
-
 func TestCacheStats(t *testing.T) {
 	cache := &completionCache{
 		items: make(map[string]*cacheEntry),

@@ -98,15 +98,23 @@ func getPathSuggestions(searchPath string, dirsOnly bool) []string {
 	// Instead of fetching synchronously (which can freeze the terminal),
 	// start a background goroutine to populate cache for next TAB press.
 	// This prevents the terminal from hanging on slow AWS API calls.
-	go func() {
-		results := fetchParameterList(searchPath, region)
-		if len(results) > 0 {
-			setCached(cacheKey, results)
-			if os.Getenv("PARSH_DEBUG") != "" {
-				fmt.Fprintf(os.Stderr, "[DEBUG] Background fetch completed for %s: %d items\n", searchPath, len(results))
+	// Only spawn a fetch if one is not already running for this key. This
+	// prevents repeated TAB presses on a slow path from launching concurrent
+	// full-store reads (thundering herd → throttling).
+	if tryBeginFetch(cacheKey) {
+		go func() {
+			// Release the slot on any exit (success, error, timeout, panic)
+			// so a later cache miss can retry.
+			defer endFetch(cacheKey)
+			results := fetchParameterList(searchPath, region)
+			if len(results) > 0 {
+				setCached(cacheKey, results)
+				if os.Getenv("PARSH_DEBUG") != "" {
+					fmt.Fprintf(os.Stderr, "[DEBUG] Background fetch completed for %s: %d items\n", searchPath, len(results))
+				}
 			}
-		}
-	}()
+		}()
+	}
 
 	// Return empty results immediately on cache miss
 	// User can press TAB again in a moment to see cached results
@@ -150,9 +158,12 @@ func fetchParameterList(path string, region string) []string {
 		close(lr)
 	}()
 
-	// For background fetches (not interactive), use a longer timeout
-	// We allow up to 2 seconds for the fetch to complete
-	timeout := 2 * time.Second
+	// This runs only inside background goroutines (getPathSuggestions,
+	// warmupCache), never on the interactive TAB path, so a generous deadline
+	// never blocks the terminal. It MUST cover a full recursive read of the
+	// root "/" (several seconds on real stores) so the results actually get
+	// cached; it stays bounded so a stalled request is eventually abandoned.
+	timeout := 10 * time.Second
 
 	if os.Getenv("PARSH_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "[DEBUG] fetchParameterList using timeout: %v\n", timeout)

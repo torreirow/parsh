@@ -220,34 +220,6 @@ var perfTracker = &performanceTracker{
 	recentLatencies: make([]time.Duration, 0, 10),
 }
 
-// getAdaptiveTimeout returns timeout based on recent performance (200-1000ms range)
-func (pt *performanceTracker) getAdaptiveTimeout() time.Duration {
-	pt.mu.RLock()
-	defer pt.mu.RUnlock()
-
-	if len(pt.recentLatencies) == 0 {
-		return 500 * time.Millisecond // Default
-	}
-
-	// Calculate average latency
-	var total time.Duration
-	for _, lat := range pt.recentLatencies {
-		total += lat
-	}
-	avg := total / time.Duration(len(pt.recentLatencies))
-
-	// Timeout = 2x average, capped at 1 second, minimum 200ms
-	timeout := avg * 2
-	if timeout > 1*time.Second {
-		timeout = 1 * time.Second
-	}
-	if timeout < 200*time.Millisecond {
-		timeout = 200 * time.Millisecond
-	}
-
-	return timeout
-}
-
 // recordLatency records API call latency
 func (pt *performanceTracker) recordLatency(lat time.Duration) {
 	pt.mu.Lock()
@@ -259,6 +231,38 @@ func (pt *performanceTracker) recordLatency(lat time.Duration) {
 	if len(pt.recentLatencies) > 10 {
 		pt.recentLatencies = pt.recentLatencies[1:]
 	}
+}
+
+// inFlightTracker de-duplicates background fetches so that at most one fetch
+// is running per cache key at a time. Without this, repeated TAB presses on a
+// slow path (e.g. root "/") would each spawn another full recursive read,
+// which can trip AWS ThrottlingException.
+type inFlightTracker struct {
+	mu   sync.Mutex
+	keys map[string]struct{}
+}
+
+var inFlight = &inFlightTracker{keys: make(map[string]struct{})}
+
+// tryBeginFetch atomically marks key as in-flight. It returns true if the
+// caller acquired the slot (and should start a fetch), or false if a fetch for
+// this key is already running.
+func tryBeginFetch(key string) bool {
+	inFlight.mu.Lock()
+	defer inFlight.mu.Unlock()
+	if _, running := inFlight.keys[key]; running {
+		return false
+	}
+	inFlight.keys[key] = struct{}{}
+	return true
+}
+
+// endFetch releases the in-flight slot for key so a later cache miss can
+// trigger a fresh fetch.
+func endFetch(key string) {
+	inFlight.mu.Lock()
+	defer inFlight.mu.Unlock()
+	delete(inFlight.keys, key)
 }
 
 // getCached is a unified cache lookup function

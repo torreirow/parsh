@@ -5,6 +5,13 @@ All notable changes to parsh will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## NEXT VERSION
+
+### Fixed
+- **Tab completion at the parameter-store root `/`**: Completion no longer returns nothing at `/` (and other slow/large listings). The root listing reads the whole hierarchy (~seconds), which exceeded the hardcoded 2s background-fetch deadline, so results were never cached and every TAB failed. The background-fetch timeout is raised to 10s (background-only, so it never blocks the terminal), letting the read complete and populate the cache.
+  - Added a single-flight guard so repeated TAB presses on a slow path no longer launch concurrent full-store reads (which could trigger AWS `ThrottlingException`).
+  - Removed dead `getAdaptiveTimeout` code left over from an earlier synchronous design.
+
 ## [1.0.3] - 10 Apr 2026
 Fix: go-releaser issues
 
