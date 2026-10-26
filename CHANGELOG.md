@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`put` value from file or stdin**: `value=file://<path>` reads the parameter value verbatim from a file, like the AWS CLI. Use `value=file:///dev/stdin` to pipe content in, e.g. `cat crontab | parsh put name=/prod/crontab type=String value=file:///dev/stdin`.
 
 ### Fixed
+- **Nix flake version**: The flake now reads its version from `VERSION` instead of a hardcoded `v1.0.0`, so `parsh -version` is correct for Nix installs. Also removes the `'system' has been renamed` evaluation warning.
 - **Multiline values in inline `put`**: `put ... value="$(cat file)"` no longer drops the last character of every line, and no longer panics on empty lines. The ishell workaround now strips a trailing space only when one is actually present.
 
 ## [1.0.4] - 26 Oct 2026
