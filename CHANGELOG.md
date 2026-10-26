@@ -5,7 +5,7 @@ All notable changes to parsh will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## NEXT VERSION
+## [1.0.5] - 26 Oct 2026
 
 ### Added
 - **`put` value from file or stdin**: `value=file://<path>` reads the parameter value verbatim from a file, like the AWS CLI. Use `value=file:///dev/stdin` to pipe content in, e.g. `cat crontab | parsh put name=/prod/crontab type=String value=file:///dev/stdin`.
