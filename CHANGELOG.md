@@ -5,7 +5,10 @@ All notable changes to parsh will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## NEXT VERSION
+## [1.0.4] - 26 Oct 2026
+
+### Added
+- **Homebrew**: Install with `brew install torreirow/tap/parsh`. GoReleaser publishes a cask to `torreirow/homebrew-tap` on every release; release binaries are now named plain `parsh`.
 
 ### Fixed
 - **Tab completion at the parameter-store root `/`**: Completion no longer returns nothing at `/` (and other slow/large listings). The root listing reads the whole hierarchy (~seconds), which exceeded the hardcoded 2s background-fetch deadline, so results were never cached and every TAB failed. The background-fetch timeout is raised to 10s (background-only, so it never blocks the terminal), letting the read complete and populate the cache.
