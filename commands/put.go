@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"path"
 	"regexp"
 	"strconv"
@@ -19,6 +20,7 @@ import (
 const putUsage string = `usage: put <newline>
 Create or update parameters. Enter one option per line, ending with a blank line, or all
 options inline. All fields except name, value, and type are optional.
+Use value=file://<path> to read the value from a file, or value=file:///dev/stdin to read it from stdin.
 Example of inline put:
 /> put name=/House/Targaryen/Daenerys value="Queen" type="String" description="Mother of dragons"
 Example of multiline put:
@@ -178,6 +180,15 @@ func validateType(s string) (err error) {
 }
 
 func validateValue(s string) (err error) {
+	// value=file://<path> reads the value verbatim from a file, like the AWS CLI
+	if fn, ok := strings.CutPrefix(s, "file://"); ok {
+		data, err := os.ReadFile(fn)
+		if err != nil {
+			return fmt.Errorf("Error reading value from file: %v", err)
+		}
+		putParamInput.Value = aws.String(string(data))
+		return nil
+	}
 	s = trimSpaces(s)
 	putParamInput.Value = aws.String(s)
 	return nil
@@ -185,11 +196,12 @@ func validateValue(s string) (err error) {
 
 // trimSpaces works around an issue in ishell where a space is added to the end of each line in a multiline value
 // https://github.com/abiosoft/ishell/issues/132
+// Only an actual trailing space is removed, so values passed inline (e.g. via
+// value="$(cat file)") keep their content and empty lines are left intact.
 func trimSpaces(s string) string {
 	parts := strings.Split(s, "\n")
 	for i := 0; i < len(parts)-1; i++ {
-		size := len(parts[i])
-		parts[i] = parts[i][:size-1]
+		parts[i] = strings.TrimSuffix(parts[i], " ")
 	}
 	return strings.Join(parts, "\n")
 }

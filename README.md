@@ -436,6 +436,13 @@ Single line version:
 /> put name=/dev/app/domain value="www.example.com" type=String description="The domain of the app in dev"
 ```
 
+Read the value from a file with `file://` (the content is stored verbatim, including line breaks), or from stdin with `file:///dev/stdin`:
+
+```bash
+$ parsh put name=/prod/server/crontab type=String value=file:///etc/cron.d/backup
+$ cat crontab | parsh put name=/prod/server/crontab type=String value=file:///dev/stdin
+```
+
 Put with a value containing line breaks:
 
 ```
