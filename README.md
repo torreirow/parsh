@@ -18,6 +18,12 @@ parsh is an interactive shell for the AWS EC2 Parameter Store. Features:
 
 ## Installation
 
+### Homebrew
+
+```bash
+brew install torreirow/tap/parsh
+```
+
 ### Binaries
 
 Download binaries for MacOS, Linux, or Windows from the latest release [here](https://github.com/torreirow/parsh/releases).

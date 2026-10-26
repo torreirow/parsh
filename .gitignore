@@ -8,3 +8,4 @@ coverage.out
 *.test
 *.sw*
 /parsh
+/dist

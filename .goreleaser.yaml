@@ -16,8 +16,8 @@ builds:
       - amd64
       - arm64
     ldflags:
-      - -X main.Version={{.Version}}
-    binary: parsh-{{.Os}}-{{.Arch}}
+      - -s -w -X main.Version={{.Version}}
+    binary: parsh
 
 archives:
   - name_template: "parsh-{{.Version}}-{{.Os}}-{{.Arch}}"
@@ -33,3 +33,24 @@ release:
   github:
     owner: torreirow
     name: parsh
+
+homebrew_casks:
+  - name: parsh
+    directory: Casks
+    repository:
+      owner: torreirow
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    commit_author:
+      name: goreleaserbot
+      email: wouter@technative.eu
+    homepage: "https://github.com/torreirow/parsh"
+    description: "Interactive shell for the AWS SSM Parameter Store"
+    license: "MIT"
+    hooks:
+      post:
+        # Binaries are not notarized; strip quarantine so macOS lets them run
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/parsh"]
+          end
