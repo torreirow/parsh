@@ -7,3 +7,4 @@ ssmsh
 coverage.out
 *.test
 *.sw*
+/parsh
