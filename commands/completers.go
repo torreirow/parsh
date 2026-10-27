@@ -308,9 +308,9 @@ func warmupCache() {
 
 	// List of paths to pre-fetch (in order of priority)
 	pathsToWarmup := []string{
-		"/",           // Root - most common
-		ps.Cwd,        // Current directory
-		"/dev",        // Common paths
+		"/",    // Root - most common
+		ps.Cwd, // Current directory
+		"/dev", // Common paths
 		"/prod",
 		"/staging",
 		"/test",

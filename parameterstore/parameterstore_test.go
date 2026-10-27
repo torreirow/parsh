@@ -623,7 +623,7 @@ func TestList(t *testing.T) {
 // mockedSSMCapture extends the mock to capture the WithDecryption flag passed to GetParameters
 type mockedSSMCapture struct {
 	ssmiface.SSMAPI
-	GetParameterResp      []ssm.GetParameterOutput
+	GetParameterResp       []ssm.GetParameterOutput
 	capturedWithDecryption *bool
 }
 

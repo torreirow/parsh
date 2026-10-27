@@ -177,8 +177,8 @@ func TestValidateAndApplyDefaults(t *testing.T) {
 				Type               string
 				Output             string
 				Completion         bool
-				CompletionMaxItems int `gcfg:"completion-max-items"`
-				CompletionCacheTTL int `gcfg:"completion-cache-ttl"`
+				CompletionMaxItems int    `gcfg:"completion-max-items"`
+				CompletionCacheTTL int    `gcfg:"completion-cache-ttl"`
 				CacheEnabled       bool   `gcfg:"cache-enabled"`
 				CacheLocation      string `gcfg:"cache-location"`
 				CacheMaxSize       int    `gcfg:"cache-max-size"`
@@ -203,8 +203,8 @@ func TestValidateAndApplyDefaults(t *testing.T) {
 				Type               string
 				Output             string
 				Completion         bool
-				CompletionMaxItems int `gcfg:"completion-max-items"`
-				CompletionCacheTTL int `gcfg:"completion-cache-ttl"`
+				CompletionMaxItems int    `gcfg:"completion-max-items"`
+				CompletionCacheTTL int    `gcfg:"completion-cache-ttl"`
 				CacheEnabled       bool   `gcfg:"cache-enabled"`
 				CacheLocation      string `gcfg:"cache-location"`
 				CacheMaxSize       int    `gcfg:"cache-max-size"`
@@ -229,8 +229,8 @@ func TestValidateAndApplyDefaults(t *testing.T) {
 				Type               string
 				Output             string
 				Completion         bool
-				CompletionMaxItems int `gcfg:"completion-max-items"`
-				CompletionCacheTTL int `gcfg:"completion-cache-ttl"`
+				CompletionMaxItems int    `gcfg:"completion-max-items"`
+				CompletionCacheTTL int    `gcfg:"completion-cache-ttl"`
 				CacheEnabled       bool   `gcfg:"cache-enabled"`
 				CacheLocation      string `gcfg:"cache-location"`
 				CacheMaxSize       int    `gcfg:"cache-max-size"`

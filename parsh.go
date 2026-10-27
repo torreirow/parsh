@@ -10,10 +10,10 @@ import (
 	"syscall"
 
 	"github.com/abiosoft/ishell"
+	"github.com/mattn/go-shellwords"
 	"github.com/torreirow/parsh/commands"
 	"github.com/torreirow/parsh/config"
 	"github.com/torreirow/parsh/parameterstore"
-	"github.com/mattn/go-shellwords"
 )
 
 var Version string
